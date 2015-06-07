@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
  * Collects only elements which sort first.
  * The {@link java.util.stream.Stream} being collected does not need to already be sorted.
  * For example, in an array of {"b", "a", "a"}, both "a" strings will be collected, but not "b".
+ * Maintains stream encounter order if the downstream collector does not have the
+ * {@link java.util.stream.Collector.Characteristics#UNORDERED} characteristic.
+ * Supports concurrent collection.
  * <p>
  * Will often be faster than alternatives such as:
  * <ul>

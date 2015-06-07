@@ -3,6 +3,7 @@ package com.davidleston.stream;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -62,6 +63,17 @@ public class FirstRankCollectorConcurrentTest {
     collector.right("a");
     List<String> strings = collector.combineAndFinish();
     assertThat(strings).containsExactly("a");
+  }
+
+  @Test
+  public void maintainsOrder() {
+    collector = Helper.create(FirstRankCollector.create(Comparator.comparing(element -> true)));
+    collector.left("d");
+    collector.left("c");
+    collector.right("b");
+    collector.right("a");
+    List<String> strings = collector.combineAndFinish();
+    assertThat(strings).containsExactly("d", "c", "b", "a");
   }
 
   private static final class Helper<A> {

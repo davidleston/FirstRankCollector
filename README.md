@@ -10,7 +10,7 @@ For example, in an array of {"b", "a", "a"}, both "a" strings will be collected,
 Given a stream of n items with m first-ranked items, n comparisons
 and m to n invocations of the downstream collector are made.
 
-Supports null values.
+Supports null values. Maintains stream encounter order.
 
 ## Example Usage
 

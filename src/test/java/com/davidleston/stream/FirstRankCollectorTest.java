@@ -95,4 +95,11 @@ public class FirstRankCollectorTest {
     Collector<String, ?, Set<String>> collector = FirstRankCollector.create(Collectors.<String>toSet());
     assertThat(collector.characteristics()).containsOnly(Collector.Characteristics.UNORDERED);
   }
+
+  @Test
+  public void maintainsOrder() {
+    List<Character> characters = Stream.of('A', 'b', 'B', 'a')
+        .collect(FirstRankCollector.create(Comparator.comparing(Character::isUpperCase)));
+    assertThat(characters).containsExactly('b', 'a');
+  }
 }
