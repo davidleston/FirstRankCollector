@@ -7,6 +7,27 @@
   <groupId>com.davidleston</groupId>
   <artifactId>FirstRankCollector</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>${project.artifactId}</name>
+  <description>A Java stream collector that collects only elements which sort first.</description>
+  <url>https://github.com/davidleston/FirstRankCollector</url>
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>David Leston</name>
+      <url>http://DavidLeston.com</url>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git@github.com:davidleston/FirstRankCollector.git</connection>
+    <developerConnection>scm:git:git@github.com:davidleston/FirstRankCollector.git</developerConnection>
+    <url>git@github.com:davidleston/FirstRankCollector.git</url>
+  </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -34,6 +55,18 @@
           <source>1.8</source>
           <target>1.8</target>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.eluder.coveralls</groupId>
