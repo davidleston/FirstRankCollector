@@ -1,6 +1,8 @@
 FirstRankCollector
 ==================
 
+[![Build Status](https://travis-ci.org/davidleston/FirstRankCollector.svg?branch=master)](https://travis-ci.org/davidleston/FirstRankCollector)
+
 An implementation of Java 8's java.util.stream.Collector that collects only elements which sort first.
 The stream being collected does not need to already be sorted.
 For example, in an array of {"b", "a", "a"}, both "a" strings will be collected, but not "b".
