@@ -30,39 +30,39 @@ public class FirstRankCollectorConcurrentTest {
   @Test
   public void leftCollectedSomething_rightCollectedNothing() {
     collector.left("a");
-    List<String> strings = collector.combineAndFinish();
-    assertThat(strings).containsExactly("a");
+    List<String> elements = collector.combineAndFinish();
+    assertThat(elements).containsExactly("a");
   }
 
   @Test
   public void leftCollectedNothing_rightCollectedSomething() {
     collector.right("a");
-    List<String> strings = collector.combineAndFinish();
-    assertThat(strings).containsExactly("a");
+    List<String> elements = collector.combineAndFinish();
+    assertThat(elements).containsExactly("a");
   }
 
   @Test
   public void leftCollectedA_rightCollectedA() {
     collector.left("a");
     collector.right("a");
-    List<String> strings = collector.combineAndFinish();
-    assertThat(strings).containsExactly("a", "a");
+    List<String> elements = collector.combineAndFinish();
+    assertThat(elements).containsExactly("a", "a");
   }
 
   @Test
   public void leftCollectedA_rightCollectedB() {
     collector.left("a");
     collector.right("b");
-    List<String> strings = collector.combineAndFinish();
-    assertThat(strings).containsExactly("a");
+    List<String> elements = collector.combineAndFinish();
+    assertThat(elements).containsExactly("a");
   }
 
   @Test
   public void leftCollectedB_rightCollectedA() {
     collector.left("b");
     collector.right("a");
-    List<String> strings = collector.combineAndFinish();
-    assertThat(strings).containsExactly("a");
+    List<String> elements = collector.combineAndFinish();
+    assertThat(elements).containsExactly("a");
   }
 
   @Test
@@ -72,8 +72,8 @@ public class FirstRankCollectorConcurrentTest {
     collector.left("c");
     collector.right("b");
     collector.right("a");
-    List<String> strings = collector.combineAndFinish();
-    assertThat(strings).containsExactly("d", "c", "b", "a");
+    List<String> elements = collector.combineAndFinish();
+    assertThat(elements).containsExactly("d", "c", "b", "a");
   }
 
   private static final class Helper<A> {

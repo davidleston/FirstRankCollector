@@ -15,66 +15,66 @@ import static org.assertj.core.api.Assertions.*;
 public class FirstRankCollectorTest {
   @Test
   public void emptyStreamResultsInEmptyCollection() {
-    List<String> strings = Stream.<String>of().collect(FirstRankCollector.<String>create());
-    assertThat(strings).isEmpty();
+    List<String> elements = Stream.<String>of().collect(FirstRankCollector.<String>create());
+    assertThat(elements).isEmpty();
   }
 
   @Test
   public void streamOfOneResultsInCollectionOfOne() {
-    List<String> strings = Stream.of("a").collect(FirstRankCollector.<String>create());
-    assertThat(strings).containsExactly("a");
+    List<String> elements = Stream.of("a").collect(FirstRankCollector.<String>create());
+    assertThat(elements).containsExactly("a");
   }
 
   @Test
   public void streamOfTwoNonEqualElementsInRankOrderResultsInCollectionOfFirstRankedElement() {
-    List<String> strings = Stream.of("a", "b").collect(FirstRankCollector.<String>create());
-    assertThat(strings).containsExactly("a");
+    List<String> elements = Stream.of("a", "b").collect(FirstRankCollector.<String>create());
+    assertThat(elements).containsExactly("a");
   }
 
   @Test
   public void streamOfTwoNonEqualElementsInReverseRankOrderResultsInCollectionOfFirstRankedElement() {
-    List<String> strings = Stream.of("b", "a").collect(FirstRankCollector.<String>create());
-    assertThat(strings).containsExactly("a");
+    List<String> elements = Stream.of("b", "a").collect(FirstRankCollector.<String>create());
+    assertThat(elements).containsExactly("a");
   }
 
   @Test(expected = NullPointerException.class)
   public void defaultComparatorForStringsDoesNotSupportNull() {
-    List<String> strings = Stream.of(null, "a").collect(FirstRankCollector.<String>create());
-    assertThat(strings).containsExactly("a");
+    List<String> elements = Stream.of(null, "a").collect(FirstRankCollector.<String>create());
+    assertThat(elements).containsExactly("a");
   }
 
   @Test
   public void nullFirstComparatorAndNullFriendlyCollection() {
-    List<String> strings = Stream.of(null, "a").collect(FirstRankCollector
+    List<String> elements = Stream.of(null, "a").collect(FirstRankCollector
         .<String>create(Comparator.nullsFirst(Comparator.<String>naturalOrder())));
-    assertThat(strings).containsExactly(new String[]{null});
+    assertThat(elements).containsExactly(new String[]{null});
   }
 
   @Test
   public void nullLastComparatorAndNullFriendlyCollection() {
-    List<String> strings = Stream.of(null, "a").collect(FirstRankCollector
+    List<String> elements = Stream.of(null, "a").collect(FirstRankCollector
         .<String>create(Comparator.nullsLast(Comparator.<String>naturalOrder())));
-    assertThat(strings).containsExactly("a");
+    assertThat(elements).containsExactly("a");
   }
 
   @Test
   public void duplicatesAreKeptByDefault() {
-    List<String> strings = Stream.of("a", "a").collect(FirstRankCollector.<String>create());
-    assertThat(strings).hasSize(2);
+    List<String> elements = Stream.of("a", "a").collect(FirstRankCollector.<String>create());
+    assertThat(elements).hasSize(2);
   }
 
   @Test
   public void setCollectorResultsInDeduping() {
-    Set<String> strings = Stream.of("a", "a")
+    Set<String> elements = Stream.of("a", "a")
         .collect(FirstRankCollector.<String, Set<String>>create(Collectors.toSet()));
-    assertThat(strings).hasSize(1);
+    assertThat(elements).hasSize(1);
   }
 
   @Test
   public void customCollectorAndCustomComparator() {
-    Set<String> strings = Stream.of("a", "b")
+    Set<String> elements = Stream.of("a", "b")
         .collect(FirstRankCollector.<String, Set<String>>create(Collectors.toSet(), Collections.reverseOrder()));
-    assertThat(strings).containsExactly("b");
+    assertThat(elements).containsExactly("b");
   }
 
   @Test

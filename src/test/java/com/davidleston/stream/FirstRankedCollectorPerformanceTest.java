@@ -97,12 +97,10 @@ public class FirstRankedCollectorPerformanceTest {
   }
 
   private void compareMethods(Function<List<String>, List<String>> slowMethod) {
-    System.out.println();
-    System.out.format("%s: ", name.getMethodName());
+    System.out.format("%n%s: ", name.getMethodName());
     long slowTime = testMethod(slowMethod);
 
-    System.out.println();
-    System.out.format("Best time for %s: %s%n", name.getMethodName(), slowTime);
+    System.out.format("%nBest time for %s: %s%n", name.getMethodName(), slowTime);
     System.out.format("FirstRankedCollector %s%% faster!%n", (int) ((((double) slowTime / (double) fastTime) - 1) * 100));
     assertThat(slowTime).isGreaterThan(fastTime)
         .as("Expect slow method to take longer than fast method.");
