@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
  * <p>
  * Will often be faster than alternatives such as:
  * <ul>
- *   <li>{@link Collectors#groupingBy(Function)}, sorting keys, selecting group by first-ranked key</li>
- *   <li>Finding min value, filter other values</li>
+ *   <li>{@link Collectors#groupingBy(Function)}, sort keys, select group by first-ranked key</li>
+ *   <li>Find min value, filter other values</li>
  * </ul>
  * <p>
  * Given a stream of n items with m first-ranked items, n comparisons

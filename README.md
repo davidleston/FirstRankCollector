@@ -24,7 +24,7 @@ Supports null values.
 
 FirstRankCollector will often be faster than these alternatives.
 
-### Slower Alternative: Grouping by key, sorting keys, selecting group by first-ranked key
+### Slower Alternative: Group by value, sort keys, select group by first-ranked key
     stream.collect(Collectors.collectingAndThen(
       Collectors.groupingBy(Function.<String>identity()),
       map -> map.get(
@@ -37,7 +37,7 @@ FirstRankCollector will often be faster than these alternatives.
       )
     )
 
-### Slower Alternative: Finding min value, filter other values
+### Slower Alternative: Find min value, filter other values
     T min = Collections.min(collection);
     collection.stream()
       .filter(minValue::equals)
