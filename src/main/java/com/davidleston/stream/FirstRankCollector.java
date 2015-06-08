@@ -22,8 +22,32 @@ import java.util.stream.Collectors;
  *   <li>Find min value, filter other values</li>
  * </ul>
  * <p>
- * Given a stream of n items with m first-ranked items, n comparisons
- * and m to n invocations of the downstream collector are made.
+ * Given a stream of n elements with m first-ranked elements:
+ * <table>
+ *   <tr>
+ *     <th></th>
+ *     <th>comparisons</th>
+ *     <th>downstream accumulations</th>
+ *     <th>downstream accumulators instantiated</th>
+ *     <th>iterations</th>
+ *   </tr>
+ *   <tr>
+ *     <th>best case</th>
+ *     <td>n</td>
+ *     <td>m</td>
+ *     <td>1</td>
+ *     <td>1</td>
+ *   </tr>
+ *   <tr>
+ *     <th>worst case</th>
+ *     <td>n</td>
+ *     <td>n</td>
+ *     <td>n - m + 1</td>
+ *     <td>1</td>
+ *   </tr>
+ * </table>
+ * Best case is when all first-ranked elements are at the beginning of the stream.
+ * Worst case is when the stream is in reverse order and none of the elements that are not first-ranked are equal.
  * <p>
  * Assumes the downstream {@link Collector} supports having containers created that are never
  * combined via a {@link Collector#combiner()} nor finished via a {@link Collector#finisher()}.
