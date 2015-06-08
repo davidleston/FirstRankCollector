@@ -38,7 +38,8 @@ This method requires two iterations through the collection.
 Using a FirstRankCollector will often be faster as it only requires one iteration through the collection:
 
     paymentsOfTheHighestAmount = payments.stream()
-      .collect(FirstRankCollector.create(Comparator.reverseOrder(Comparator.comparing(payment -> payment.amount))));  
+      .collect(FirstRankCollector.create(
+        Comparator.reverseOrder(Comparator.comparing(payment -> payment.amount))));  
 
 ## Performance
 
