@@ -3,3 +3,18 @@ jdk:
  - oraclejdk8
 after_success:
  - mvn clean test jacoco:report coveralls:report
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "XxOkN+p0xhc0G6JchPkcd+Yc3ufGTOFq7mZBs1VnORDnUU5k9jnjFeKX6Li/ssmZO+ryuhYKYW/1twU0uO6AC78tqUFkr33NiQ3aJ0QdT0CDtgDy1eGuZoLwnIcRQiF/h+VhQKcP23MMB8erxYVwTHySGCBYLqTUKQ9/cKLJ02sbRWtCJ3tjc4+V3Jduu+da2jRDbo2kov0WmCtRyxcqwYbco38uH7PbUNagbbBW+iIsJZs3euWf91g1f0nFYzZguyZsLsxT4ER9hs7K1R+PjgCLxPTQ9SrV8f4QnnjHN8TAFOUcOOj6cQ7rLCB9LM4knSw4mXZrHdx61J6l8ex9uOn/fIvuEdBBawZpx5kPysawvbYJ6byFbBYLlpG/Sma4GQQJK+TMbgmQrTH1vTYdoiFVCShKtkQYQFXxggbwjezJy0Cl/hwLUcKYtJ/XfcCOx4qqLm1/tXZtvnA9FOtLoG9Lc1yjDICsxehx6rmtXq6RPrLeiZc1X+mBAOOvv6RtSWpSscxAgRN+8O/BahnF7adpaSMykY2pq7NnWSKZV7KPdgH6JVVnz+jk2BFQpbxYWW87NSpb2Y27b1FQgzKduFMcuvIq/JMSWolxVML/jBWZHDsY3Jd0BbVCxd5Ee12kJRH9S85xHPzIjDSkhmwyGP4CkV6GB+KswIapo8urX1w="
+
+addons:
+  coverity_scan:
+    project:
+      name: "davidleston/FirstRankCollector"
+      description: "Build submitted via Travis CI"
+    build_command_prepend: "mvn clean"
+    build_command:   "mvn -DskipTests=true compile"
+    branch_pattern: master
