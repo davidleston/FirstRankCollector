@@ -3,6 +3,7 @@ FirstRankCollector
 
 [![Build Status](https://travis-ci.org/davidleston/FirstRankCollector.svg?branch=master)](https://travis-ci.org/davidleston/FirstRankCollector)
 [![Coverage Status](https://coveralls.io/repos/davidleston/FirstRankCollector/badge.svg?branch=master)](https://coveralls.io/r/davidleston/FirstRankCollector?branch=master)
+![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 
 An implementation of Java 8's java.util.stream.Collector that collects only elements which sort first.
 The stream being collected does not need to already be sorted.
