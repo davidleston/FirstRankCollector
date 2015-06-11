@@ -14,10 +14,15 @@ Supports null values. Maintains stream encounter order.
 ## Example Usage
 
 ### Default to collecting into a list and using natural ordering 
-    stream.collect(FirstRankCollector.create())
+    List<T> firstRankedElements = stream.collect(FirstRankCollector.create())
 
 ### Specify downstream collector and comparator
-    stream.collect(FirstRankCollector.create(downstreamCollector, comparator))
+    List<T> firstRankedElements
+      = stream.collect(FirstRankCollector.create(downstreamCollector, comparator))
+
+### Convert elements to keys, rank based on key
+    Map<K, List<T>> firstRankedKeyAndElements
+      = stream.collect(FirstRankCollector.create(classifier));
 
 ## Example Use Case
 
