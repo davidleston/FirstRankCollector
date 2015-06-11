@@ -88,8 +88,9 @@ public class FirstRankedCollectorPerformanceTest {
           List<String> results = method.apply(population);
           long end = System.nanoTime();
           int elementsFound = results.size();
-          assertThat(elementsFound).isEqualTo(expectedCount)
-              .as("Expected both methods to find the same number of first-ranked elements.");
+          assertThat(elementsFound)
+              .as("Expected both methods to find the same number of first-ranked elements.")
+              .isEqualTo(expectedCount);
           return end - start;
         })
         .min()
@@ -102,7 +103,8 @@ public class FirstRankedCollectorPerformanceTest {
 
     System.out.format("%nBest time for %s: %s%n", name.getMethodName(), slowTime);
     System.out.format("FirstRankedCollector %s%% faster!%n", (int) ((((double) slowTime / (double) fastTime) - 1) * 100));
-    assertThat(slowTime).isGreaterThan(fastTime)
-        .as("Expect slow method to take longer than fast method.");
+    assertThat(slowTime)
+        .as("Expect slow method to take longer than fast method.")
+        .isGreaterThan(fastTime);
   }
 }
