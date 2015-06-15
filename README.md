@@ -11,6 +11,9 @@ For example, in an array of {"b", "a", "a"}, both "a" strings will be collected,
 
 Supports null values. Maintains stream encounter order.
 
+For instructions on how to include this library using Maven or Gradle
+visit https://jitpack.io/#davidleston/FirstRankCollector/v1.1.0
+
 ## Example Usage
 
 ### Default to collecting into a list and using natural ordering 
