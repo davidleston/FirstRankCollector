@@ -6,7 +6,7 @@
 
   <groupId>com.davidleston</groupId>
   <artifactId>FirstRankCollector</artifactId>
-  <version>1.1.0-SNAPSHOT</version>
+  <version>1.1.0</version>
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
   <description>A Java stream collector that collects only elements which sort first.</description>

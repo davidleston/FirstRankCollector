@@ -121,7 +121,14 @@ public final class FirstRankCollector<T, K, A, R> implements Comparable<FirstRan
         (FirstRankCollector<T, T, A, R> container) -> finisher.apply(container.resultContainer));
   }
 
-  public static <T, K extends Comparable<K>> Collector<T, ?, Map<K, List<T>>> create(Function<? super T, ? extends K> classifier) {
+  /**
+   * @param classifier    a classifier function mapping input elements to keys
+   * @param <T>           the type of input elements
+   * @param <K>           the type of the keys, which are used for ranking
+   * @return an immutable map containing a single Map.Entry of the first-ranked key
+   */
+  public static <T, K extends Comparable<K>> Collector<T, ?, Map<K, List<T>>> create(
+      Function<? super T, ? extends K> classifier) {
     return create(classifier, Collectors.toList(), Comparator.naturalOrder());
   }
 
@@ -129,10 +136,11 @@ public final class FirstRankCollector<T, K, A, R> implements Comparable<FirstRan
    * @param classifier    a classifier function mapping input elements to keys
    * @param keyComparator a {@code Comparator} for comparing keys
    * @param <T>           the type of input elements
-   * @param <K>           the type of the keys
+   * @param <K>           the type of the keys, which are used for ranking
    * @return an immutable map containing a single Map.Entry of the first-ranked key
    */
-  public static <T, K> Collector<T, ?, Map<K, List<T>>> create(Function<? super T, ? extends K> classifier, Comparator<K> keyComparator) {
+  public static <T, K> Collector<T, ?, Map<K, List<T>>> create(
+      Function<? super T, ? extends K> classifier, Comparator<K> keyComparator) {
     return create(classifier, Collectors.toList(), keyComparator);
   }
 
@@ -140,7 +148,7 @@ public final class FirstRankCollector<T, K, A, R> implements Comparable<FirstRan
    * @param classifier a classifier function mapping input elements to keys
    * @param downstream a {@code Collector} implementing the downstream reduction
    * @param <T>        the type of input elements
-   * @param <K>        the type of the keys
+   * @param <K>        the type of the keys, which are used for ranking
    * @param <R>        result type of the downstream collector
    * @return an immutable map containing a single Map.Entry of the first-ranked key
    */
@@ -154,7 +162,7 @@ public final class FirstRankCollector<T, K, A, R> implements Comparable<FirstRan
    * @param downstream    a {@code Collector} implementing the downstream reduction
    * @param keyComparator a {@code Comparator} for comparing keys
    * @param <T>           the type of input elements
-   * @param <K>           the type of the keys
+   * @param <K>           the type of the keys, which are used for ranking
    * @param <A>           the intermediate accumulation type of the downstream collector
    * @param <R>           result type of the downstream collector
    * @return an immutable map containing a single Map.Entry of the first-ranked key
