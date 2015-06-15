@@ -101,30 +101,30 @@ public class FirstRankCollectorTest {
   }
 
   @Test public void keyed() {
-    Map<Integer, List<String>> map = Stream.of("a", "aa", "b", "bb", "a")
+    Map.Entry<Integer, List<String>> map = Stream.of("a", "aa", "b", "bb", "a")
         .collect(FirstRankCollector.create(String::length));
-    assertThat(map).containsOnlyKeys(1);
-    assertThat(map.get(1)).containsExactly("a", "b", "a");
+    assertThat(map.getKey()).isEqualTo(1);
+    assertThat(map.getValue()).containsExactly("a", "b", "a");
   }
 
   @Test public void keyComparator() {
-    Map<Integer, List<String>> map = Stream.of("a", "aa", "b", "bb")
+    Map.Entry<Integer, List<String>> map = Stream.of("a", "aa", "b", "bb")
         .collect(FirstRankCollector.create(String::length, Comparator.reverseOrder()));
-    assertThat(map).containsOnlyKeys(2);
-    assertThat(map.get(2)).containsExactly("aa", "bb");
+    assertThat(map.getKey()).isEqualTo(2);
+    assertThat(map.getValue()).containsExactly("aa", "bb");
   }
 
   @Test public void keyedWithDownstreamCollector() {
-    Map<Integer, Set<String>> map = Stream.of("a", "aa", "a")
+    Map.Entry<Integer, Set<String>> map = Stream.of("a", "aa", "a")
         .collect(FirstRankCollector.create(String::length, Collectors.<String>toSet()));
-    assertThat(map).containsOnlyKeys(1);
-    assertThat(map.get(1)).containsExactly("a");
+    assertThat(map.getKey()).isEqualTo(1);
+    assertThat(map.getValue()).containsExactly("a");
   }
 
   @Test public void keyedComparatorWithDownstreamCollector() {
-    Map<Integer, Set<String>> map = Stream.of("aa", "a", "aa")
+    Map.Entry<Integer, Set<String>> map = Stream.of("aa", "a", "aa")
         .collect(FirstRankCollector.create(String::length, Collectors.<String>toSet(), Comparator.reverseOrder()));
-    assertThat(map).containsOnlyKeys(2);
-    assertThat(map.get(2)).containsExactly("aa");
+    assertThat(map.getKey()).isEqualTo(2);
+    assertThat(map.getValue()).containsExactly("aa");
   }
 }

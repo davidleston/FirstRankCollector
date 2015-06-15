@@ -12,7 +12,7 @@ For example, in an array of {"b", "a", "a"}, both "a" strings will be collected,
 Supports null values. Maintains stream encounter order.
 
 For instructions on how to include this library using Maven or Gradle
-visit https://jitpack.io/#davidleston/FirstRankCollector/v1.1.0
+visit https://jitpack.io/#davidleston/FirstRankCollector/v2.0.0
 
 ## Example Usage
 
@@ -24,7 +24,7 @@ visit https://jitpack.io/#davidleston/FirstRankCollector/v1.1.0
       = stream.collect(FirstRankCollector.create(downstreamCollector, comparator))
 
 ### Convert elements to keys, rank based on key
-    Map<K, List<T>> firstRankedKeyAndElements
+    Map.Entry<K, List<T>> firstRankedKeyAndElements
       = stream.collect(FirstRankCollector.create(classifier));
 
 ## Example Use Case

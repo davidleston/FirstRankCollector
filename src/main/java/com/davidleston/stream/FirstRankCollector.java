@@ -125,9 +125,9 @@ public final class FirstRankCollector<T, K, A, R> implements Comparable<FirstRan
    * @param classifier    a classifier function mapping input elements to keys
    * @param <T>           the type of input elements
    * @param <K>           the type of the keys, which are used for ranking
-   * @return an immutable map containing a single Map.Entry of the first-ranked key
+   * @return an immutable map entry containing the first-ranked key
    */
-  public static <T, K extends Comparable<K>> Collector<T, ?, Map<K, List<T>>> create(
+  public static <T, K extends Comparable<K>> Collector<T, ?, Map.Entry<K, List<T>>> create(
       Function<? super T, ? extends K> classifier) {
     return create(classifier, Collectors.toList(), Comparator.naturalOrder());
   }
@@ -137,9 +137,9 @@ public final class FirstRankCollector<T, K, A, R> implements Comparable<FirstRan
    * @param keyComparator a {@code Comparator} for comparing keys
    * @param <T>           the type of input elements
    * @param <K>           the type of the keys, which are used for ranking
-   * @return an immutable map containing a single Map.Entry of the first-ranked key
+   * @return an immutable map entry containing the first-ranked key
    */
-  public static <T, K> Collector<T, ?, Map<K, List<T>>> create(
+  public static <T, K> Collector<T, ?, Map.Entry<K, List<T>>> create(
       Function<? super T, ? extends K> classifier, Comparator<K> keyComparator) {
     return create(classifier, Collectors.toList(), keyComparator);
   }
@@ -150,9 +150,9 @@ public final class FirstRankCollector<T, K, A, R> implements Comparable<FirstRan
    * @param <T>        the type of input elements
    * @param <K>        the type of the keys, which are used for ranking
    * @param <R>        result type of the downstream collector
-   * @return an immutable map containing a single Map.Entry of the first-ranked key
+   * @return an immutable map entry containing the first-ranked key
    */
-  public static <T, K extends Comparable<K>, R> Collector<T, ?, Map<K, R>> create(
+  public static <T, K extends Comparable<K>, R> Collector<T, ?, Map.Entry<K, R>> create(
       Function<? super T, ? extends K> classifier, Collector<T, ?, R> downstream) {
     return create(classifier, downstream, Comparator.naturalOrder());
   }
@@ -165,14 +165,14 @@ public final class FirstRankCollector<T, K, A, R> implements Comparable<FirstRan
    * @param <K>           the type of the keys, which are used for ranking
    * @param <A>           the intermediate accumulation type of the downstream collector
    * @param <R>           result type of the downstream collector
-   * @return an immutable map containing a single Map.Entry of the first-ranked key
+   * @return an immutable map entry containing the first-ranked key
    */
-  public static <T, K, A, R> Collector<T, ?, Map<K, R>> create(
+  public static <T, K, A, R> Collector<T, ?, Map.Entry<K, R>> create(
       Function<? super T, ? extends K> classifier, Collector<T, A, R> downstream, Comparator<K> keyComparator) {
     Function<A, R> finisher = downstream.finisher();
     return create(classifier, downstream, keyComparator,
-        (FirstRankCollector<T, K, A, R> container) -> Collections
-            .singletonMap(container.key, finisher.apply(container.resultContainer)));
+        (FirstRankCollector<T, K, A, R> container) ->
+            new AbstractMap.SimpleImmutableEntry<>(container.key, finisher.apply(container.resultContainer)));
   }
 
   private static <T, K, A, R, RR> Collector<T, ?, RR> create(
