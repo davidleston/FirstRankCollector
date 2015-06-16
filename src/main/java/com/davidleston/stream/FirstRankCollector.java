@@ -9,7 +9,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
- * Collects only elements which sort first.
+ * Collects only elements which tie for the minimum or maximum element.
  * The {@link java.util.stream.Stream} being collected does not need to already be sorted.
  * For example, in an array of {"b", "a", "a"}, both "a" strings will be collected, but not "b".
  * Maintains stream encounter order if the downstream collector does not have the
@@ -57,132 +57,68 @@ import java.util.stream.Collectors;
  * The default {@link Comparator} is {@link Comparator#naturalOrder()} which does not support null elements.
  * For a {@link Comparator} that supports null elements, use {@link Comparator#nullsFirst(Comparator)},
  * {@link Comparator#nullsLast(Comparator)}, or other null-safe {@link Comparator}.
- *
- * @param <T> the type of input elements
- * @param <K> the type of the keys
- * @param <A> the intermediate accumulation type of the downstream collector
- * @param <R> result type of the downstream collector
  */
-public final class FirstRankCollector<T, K, A, R> implements Comparable<FirstRankCollector<T, K, A, R>> {
-  private final Function<? super T, ? extends K> classifier;
-  private final Comparator<K> comparator;
-  private final Supplier<A> downstreamSupplier;
-  private final BiConsumer<A, T> downstreamAccumulator;
-  private A resultContainer;
-  private boolean collectionHasOccurred = false;
-  private K key;
+public enum FirstRankCollector {
+  /**
+   * Collects elements that tie for the minimum element.
+   */
+  multiMin() {
+    protected final <T> Comparator<T> internalCompareBy(Comparator<T> comparator) {
+      return comparator;
+    }
+  },
+  /**
+   * Collects elements that tie for the maximum element.
+   */
+  multiMax() {
+    protected final <T> Comparator<T> internalCompareBy(Comparator<T> comparator) {
+      return comparator.reversed();
+    }
+  };
 
-  private FirstRankCollector(Function<? super T, ? extends K> classifier, Collector<T, A, R> downstream, Comparator<K> comparator) {
-    this.classifier = classifier;
-    this.comparator = comparator;
-    downstreamSupplier = downstream.supplier();
-    downstreamAccumulator = downstream.accumulator();
-    resultContainer = downstreamSupplier.get();
-  }
+  protected abstract <T> Comparator<T> internalCompareBy(Comparator<T> comparator);
 
   /**
    * @param <T> the type of input elements to the reduction operation
-   * @return FirstRankCollector orders by natural order, reduces into a List
+   * @return Collector orders by natural order, reduces into a List
    */
-  public static <T extends Comparable<T>> Collector<T, ?, List<T>> create() {
-    return create(Collectors.<T>toList(), Comparator.<T>naturalOrder());
+  public final <T extends Comparable<T>> Collector<T, ?, List<T>> byNaturalOrder() {
+    return compareByThenCollectInto(Comparator.<T>naturalOrder(), Collectors.<T>toList());
   }
 
   /**
    * @param downstream a {@code Collector} implementing the downstream reduction
    * @param <T>        the type of input elements
    * @param <R>        result type of the downstream collector
-   * @return FirstRankCollector orders by natural order
+   * @return Collector orders by natural order, reduces into a List
    */
-  public static <T extends Comparable<T>, R> Collector<T, ?, R> create(Collector<T, ?, R> downstream) {
-    return create(downstream, Comparator.<T>naturalOrder());
+  public final <T extends Comparable<T>, R> Collector<T, ?, R> collectInto(Collector<T, ?, R> downstream) {
+    return compareByThenCollectInto(Comparator.<T>naturalOrder(), downstream);
   }
 
   /**
    * @param comparator order by this {@link Comparator}
    * @param <T>        the type of input elements
-   * @return FirstRankCollector reduces into a List
+   * @return Collector reduces into a List
    */
-  public static <T> Collector<T, ?, List<T>> create(Comparator<T> comparator) {
-    return create(Collectors.<T>toList(), comparator);
+  public final <T> Collector<T, ?, List<T>> compareBy(Comparator<T> comparator) {
+    return compareByThenCollectInto(comparator, Collectors.<T>toList());
   }
 
   /**
-   * @param downstream a {@code Collector} implementing the downstream reduction
    * @param comparator order by this {@link Comparator}
+   * @param downstream a {@code Collector} implementing the downstream reduction
    * @param <T>        the type of input elements
    * @param <A>        the intermediate accumulation type of the downstream collector
    * @param <R>        result type of the downstream collector
-   * @return FirstRankCollector
+   * @return Collector collects into downstream collector and reduces into what the downstream collector reduces into
    */
-  public static <T, A, R> Collector<T, ?, R> create(Collector<T, A, R> downstream, Comparator<T> comparator) {
-    Function<A, R> finisher = downstream.finisher();
-    return create(Function.<T>identity(), downstream, comparator,
-        (FirstRankCollector<T, T, A, R> container) -> finisher.apply(container.resultContainer));
-  }
-
-  /**
-   * @param classifier    a classifier function mapping input elements to keys
-   * @param <T>           the type of input elements
-   * @param <K>           the type of the keys, which are used for ranking
-   * @return an immutable map entry containing the first-ranked key
-   */
-  public static <T, K extends Comparable<K>> Collector<T, ?, Map.Entry<K, List<T>>> create(
-      Function<? super T, ? extends K> classifier) {
-    return create(classifier, Collectors.toList(), Comparator.naturalOrder());
-  }
-
-  /**
-   * @param classifier    a classifier function mapping input elements to keys
-   * @param keyComparator a {@code Comparator} for comparing keys
-   * @param <T>           the type of input elements
-   * @param <K>           the type of the keys, which are used for ranking
-   * @return an immutable map entry containing the first-ranked key
-   */
-  public static <T, K> Collector<T, ?, Map.Entry<K, List<T>>> create(
-      Function<? super T, ? extends K> classifier, Comparator<K> keyComparator) {
-    return create(classifier, Collectors.toList(), keyComparator);
-  }
-
-  /**
-   * @param classifier a classifier function mapping input elements to keys
-   * @param downstream a {@code Collector} implementing the downstream reduction
-   * @param <T>        the type of input elements
-   * @param <K>        the type of the keys, which are used for ranking
-   * @param <R>        result type of the downstream collector
-   * @return an immutable map entry containing the first-ranked key
-   */
-  public static <T, K extends Comparable<K>, R> Collector<T, ?, Map.Entry<K, R>> create(
-      Function<? super T, ? extends K> classifier, Collector<T, ?, R> downstream) {
-    return create(classifier, downstream, Comparator.naturalOrder());
-  }
-
-  /**
-   * @param classifier    a classifier function mapping input elements to keys
-   * @param downstream    a {@code Collector} implementing the downstream reduction
-   * @param keyComparator a {@code Comparator} for comparing keys
-   * @param <T>           the type of input elements
-   * @param <K>           the type of the keys, which are used for ranking
-   * @param <A>           the intermediate accumulation type of the downstream collector
-   * @param <R>           result type of the downstream collector
-   * @return an immutable map entry containing the first-ranked key
-   */
-  public static <T, K, A, R> Collector<T, ?, Map.Entry<K, R>> create(
-      Function<? super T, ? extends K> classifier, Collector<T, A, R> downstream, Comparator<K> keyComparator) {
-    Function<A, R> finisher = downstream.finisher();
-    return create(classifier, downstream, keyComparator,
-        (FirstRankCollector<T, K, A, R> container) ->
-            new AbstractMap.SimpleImmutableEntry<>(container.key, finisher.apply(container.resultContainer)));
-  }
-
-  private static <T, K, A, R, RR> Collector<T, ?, RR> create(
-      Function<? super T, ? extends K> classifier, Collector<T, A, R> downstream,
-      Comparator<K> keyComparator,
-      Function<FirstRankCollector<T, K, A, R>, RR> finisher) {
+  public final <T, A, R> Collector<T, ?, R> compareByThenCollectInto(Comparator<T> comparator, Collector<T, A, R> downstream) {
     BinaryOperator<A> combiner = downstream.combiner();
-    return Collector.of(
-        () -> new FirstRankCollector<>(classifier, downstream, keyComparator),
-        FirstRankCollector::collect,
+    Function<A, R> finisher = downstream.finisher();
+    return Collector.<T, Accumulator<T, A, R>, R>of(
+        () -> new Accumulator<>(downstream, internalCompareBy(comparator)),
+        Accumulator::collect,
         (left, right) -> {
           int comparisonResult = left.compareTo(right);
           if (comparisonResult > 0) {
@@ -193,39 +129,54 @@ public final class FirstRankCollector<T, K, A, R> implements Comparable<FirstRan
           }
           return left;
         },
-        finisher,
+        container -> finisher.apply(container.resultContainer),
         downstream.characteristics().contains(Collector.Characteristics.UNORDERED)
             ? new Collector.Characteristics[]{Collector.Characteristics.UNORDERED}
             : new Collector.Characteristics[]{}
     );
   }
 
-  private void collect(T element) {
-    K potentialKey = classifier.apply(element);
-    if (!collectionHasOccurred) {
-      downstreamAccumulator.accept(resultContainer, element);
-      collectionHasOccurred = true;
-      key = potentialKey;
-    } else {
-      int comparisonResult = comparator.compare(key, potentialKey);
-      if (comparisonResult == 0) {
+  private static final class Accumulator<T, A, R> implements Comparable<Accumulator<T, A, R>> {
+    private final Comparator<T> comparator;
+    private final Supplier<A> downstreamSupplier;
+    private final BiConsumer<A, T> downstreamAccumulator;
+    private A resultContainer;
+    private boolean collectionHasOccurred = false;
+    private T containedElement;
+
+    private Accumulator(Collector<T, A, R> downstream, Comparator<T> comparator) {
+      this.comparator = comparator;
+      downstreamSupplier = downstream.supplier();
+      downstreamAccumulator = downstream.accumulator();
+      resultContainer = downstreamSupplier.get();
+    }
+
+    private void collect(T element) {
+      if (!collectionHasOccurred) {
         downstreamAccumulator.accept(resultContainer, element);
-      } else if (comparisonResult > 0) {
-        resultContainer = downstreamSupplier.get();
-        downstreamAccumulator.accept(resultContainer, element);
-        key = potentialKey;
+        collectionHasOccurred = true;
+        containedElement = element;
+      } else {
+        int comparisonResult = comparator.compare(containedElement, element);
+        if (comparisonResult == 0) {
+          downstreamAccumulator.accept(resultContainer, element);
+        } else if (comparisonResult > 0) {
+          resultContainer = downstreamSupplier.get();
+          downstreamAccumulator.accept(resultContainer, element);
+          containedElement = element;
+        }
       }
     }
-  }
 
-  @Override
-  public int compareTo(FirstRankCollector<T, K, A, R> other) {
-    if (!collectionHasOccurred) {
-      return 1;
+    @Override
+    public int compareTo(Accumulator<T, A, R> other) {
+      if (!collectionHasOccurred) {
+        return 1;
+      }
+      if (!other.collectionHasOccurred) {
+        return -1;
+      }
+      return comparator.compare(containedElement, other.containedElement);
     }
-    if (!other.collectionHasOccurred) {
-      return -1;
-    }
-    return comparator.compare(key, other.key);
   }
 }

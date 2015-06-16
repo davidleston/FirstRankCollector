@@ -19,7 +19,7 @@ public class FirstRankCollectorConcurrentTest {
 
   @Before
   public void beforeEachTest() {
-    collector = Helper.create(FirstRankCollector.create());
+    collector = Helper.create(FirstRankCollector.multiMin.byNaturalOrder());
   }
 
   @Test
@@ -67,7 +67,7 @@ public class FirstRankCollectorConcurrentTest {
 
   @Test
   public void maintainsOrder() {
-    collector = Helper.create(FirstRankCollector.create(Comparator.comparing(element -> true)));
+    collector = Helper.create(FirstRankCollector.multiMin.compareBy(Comparator.comparing(element -> true)));
     collector.left("d");
     collector.left("c");
     collector.right("b");

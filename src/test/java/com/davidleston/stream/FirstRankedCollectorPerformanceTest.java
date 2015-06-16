@@ -41,7 +41,7 @@ public class FirstRankedCollectorPerformanceTest {
     System.out.println();
     System.out.print("fast method: ");
     fastTime = testMethod((population) -> population.stream()
-        .collect(FirstRankCollector.create()));
+        .collect(FirstRankCollector.multiMin.byNaturalOrder()));
 
     System.out.format("%nFinding %s first-ranked of %s strings. Executing %s runs of each method. ",
         expectedCount, populationSize, runs);

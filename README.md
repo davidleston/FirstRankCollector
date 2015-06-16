@@ -5,27 +5,28 @@ FirstRankCollector
 [![Coverage Status](https://coveralls.io/repos/davidleston/FirstRankCollector/badge.svg?branch=master)](https://coveralls.io/r/davidleston/FirstRankCollector?branch=master)
 ![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 
-An implementation of Java 8's java.util.stream.Collector that collects only elements which sort first.
+An implementation of Java 8's java.util.stream.Collector that
+collects only elements that tie for the minimum or maximum element.
 The stream being collected does not need to already be sorted.
 For example, in an array of {"b", "a", "a"}, both "a" strings will be collected, but not "b".
 
 Supports null values. Maintains stream encounter order.
 
 For instructions on how to include this library using Maven or Gradle
-visit https://jitpack.io/#davidleston/FirstRankCollector/v2.0.0
+visit https://jitpack.io/#davidleston/FirstRankCollector/v3.0.0
 
 ## Example Usage
 
+FirstRankCollector.multiMin collects elements that tie for the minimum element.
+
+FirstRankCollector.multiMax collects elements that tie for the maximum element.
+
 ### Default to collecting into a list and using natural ordering 
-    List<T> firstRankedElements = stream.collect(FirstRankCollector.create())
+    List<T> firstRankedElements = stream.collect(FirstRankCollector.multiMin.byNaturalOrder())
 
 ### Specify downstream collector and comparator
     List<T> firstRankedElements
-      = stream.collect(FirstRankCollector.create(downstreamCollector, comparator))
-
-### Convert elements to keys, rank based on key
-    Map.Entry<K, List<T>> firstRankedKeyAndElements
-      = stream.collect(FirstRankCollector.create(classifier));
+      = stream.collect(FirstRankCollector.multiMin.compareByThenInto(downstreamCollector, comparator))
 
 ## Example Use Case
 
