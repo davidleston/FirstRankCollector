@@ -6,7 +6,7 @@
 
   <groupId>com.davidleston</groupId>
   <artifactId>FirstRankCollector</artifactId>
-  <version>3.0.0</version>
+  <version>3.0.1</version>
   <packaging>jar</packaging>
   <name>${project.artifactId}</name>
   <description>A Java stream collector that collects only elements which sort first.</description>
@@ -35,13 +35,13 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.7</version>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>3.0.0</version>
+      <version>3.1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -91,4 +91,13 @@
       </plugin>
     </plugins>
   </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.3</version>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>
