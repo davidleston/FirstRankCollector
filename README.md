@@ -13,7 +13,7 @@ For example, in an array of {"b", "a", "a"}, both "a" strings will be collected,
 Supports null values. Maintains stream encounter order.
 
 For instructions on how to include this library using Maven or Gradle
-visit https://jitpack.io/#davidleston/FirstRankCollector/v3.0.0
+visit https://jitpack.io/#davidleston/FirstRankCollector/v3.0.1
 
 ## Example Usage
 
